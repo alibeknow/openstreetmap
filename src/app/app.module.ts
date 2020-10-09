@@ -11,6 +11,8 @@ import {FormsModule} from '@angular/forms';
 import {MapComponent} from './map/map.component';
 import {MapPointFormComponent} from './map-point-form/map-point-form.component';
 import {ResultsListComponent} from './results-list/results-list.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import {ResultsListComponent} from './results-list/results-list.component';
     GeocodingComponent,
     MapComponent,
     MapPointFormComponent,
-    ResultsListComponent
+    ResultsListComponent,
+    SignUpComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
