@@ -3,7 +3,10 @@ import {icon, latLng, LeafletMouseEvent, Map, MapOptions, marker, tileLayer} fro
 import {DEFAULT_LATITUDE, DEFAULT_LONGITUDE} from '../app.constants';
 import {MapPoint} from '../shared/models/map-point.model';
 import {NominatimResponse} from '../shared/models/nominatim-response.model';
+
 import extent from '../../assets/extent'
+import { MapService } from '../services/map.service';
+
 
 @Component({
   selector: 'app-map',
@@ -19,7 +22,9 @@ export class MapComponent implements OnInit {
   mapExtent: extent;
   results: NominatimResponse[];
 
-  constructor () {
+  // _draw = Draw.drawLocal
+
+  constructor (private mapService: MapService) {
   }
 
   ngOnInit () {
@@ -30,6 +35,7 @@ export class MapComponent implements OnInit {
 
   initializeMap (map: Map) {
     this.map = map;
+    this.mapService.map = map
     this.createMarker();
     this.setBound()
   }
@@ -104,6 +110,10 @@ export class MapComponent implements OnInit {
   private setBound() {
 
   this.map.setMaxBounds(extent)
+  }
+
+  private createPoint() {
+    console.log('create point')
   }
 
 }

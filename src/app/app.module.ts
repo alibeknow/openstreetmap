@@ -13,6 +13,7 @@ import {MapPointFormComponent} from './map-point-form/map-point-form.component';
 import {ResultsListComponent} from './results-list/results-list.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HeaderComponent } from './header/header.component';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HeaderComponent } from './header/header.component';
     MapPointFormComponent,
     ResultsListComponent,
     SignUpComponent,
-    HeaderComponent
+    HeaderComponent,
+    LeftPanelComponent
   ],
   imports: [
     BrowserModule,
