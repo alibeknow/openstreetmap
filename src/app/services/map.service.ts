@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import 'leaflet-draw';
 import { resolve } from 'url';
 
-import { drawPoint } from '../shared/utils/map_util.js'
+import { drawPoint, createMarker } from '../shared/utils/map_util.js'
 
 
 @Injectable({
@@ -18,7 +18,28 @@ export class MapService {
    lng: '',
    description: ''
  }
- layersList = []
+ layersList : any = [
+   {
+    description: "",
+    lat: 49.468124067331644,
+    lng: 72.37792968750001
+   },
+  {
+    description: "",
+lat: 49.37522008143603,
+lng: 72.26806640625001
+  },
+  {
+    description: "",
+lat: 49.27497287599639,
+lng: 72.48779296875001
+  },
+  {
+    description: "",
+lat: 49.18170338770663,
+lng: 72.01538085937501
+  }
+ ]
  coordinateShow = false
 
   constructor() { }
@@ -70,6 +91,19 @@ console.log(coord)
   }
 
   getAllMarkers() {
+    console.log('get markers')
+
+    this.layersList.forEach(item => {
+
+
+      console.log('looooooop')
+        const marker = createMarker(item.lat , item.lng)
+      console.log(marker)
+      marker.addTo(this.map);
+
+    })
+
+
 
   }
 }

@@ -22,3 +22,11 @@ export function drawPoint(map, options) {
     icon: greenIcon
   }).enable()
 }
+
+export function createMarker(lat, lng) {
+ const createdMarker = new L.marker([lat, lng], {
+   icon: greenIcon
+ });
+ console.log(createdMarker)
+  return createdMarker
+}

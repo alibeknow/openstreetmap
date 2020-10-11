@@ -21,6 +21,7 @@ export class LeftPanelComponent implements OnInit {
 
   ngOnInit() {
     console.log('init conmonent')
+
   }
 
  async drawPoint() {
@@ -29,7 +30,7 @@ console.log('start add point')
 
 
   let coord: any = await this.mapService.drawPoint()
-  this.coordinates = {
+  this.mapService.currentCoordinates = {
     lat: coord.lat,
     lng: coord.lng,
     description: ''

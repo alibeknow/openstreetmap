@@ -38,6 +38,7 @@ export class MapComponent implements OnInit {
     this.mapService.map = map
     this.createMarker();
     this.setBound()
+    this.mapService.getAllMarkers()
   }
 
   getAddress (result: NominatimResponse) {
