@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import 'leaflet-draw';
 import { resolve } from 'url';
 
-import { drawPoint, createMarker } from '../shared/utils/map_util.js'
+import { drawPoint, createMarker, createMarkerCluster } from '../shared/utils/map_util.js'
 
 
 @Injectable({
@@ -38,6 +38,31 @@ lng: 72.48779296875001
     description: "",
 lat: 49.18170338770663,
 lng: 72.01538085937501
+  },
+  {
+    description: "",
+lat: 48.48748647988415,
+lng: 75.45410156250001
+  },
+  {
+    description: "",
+lat: 48.16608541901253,
+lng: 74.92675781250001
+  },
+  {
+    description: "",
+lat: 51.39920565355378,
+lng: 63.28125000000001
+  },
+  {
+    description: "",
+lat: 51.17934297928929,
+lng: 62.70996093750001
+  },
+  {
+    description: "",
+lat: 50.597186230587035,
+lng: 63.41308593750001
   }
  ]
  coordinateShow = false
@@ -51,7 +76,7 @@ lng: 72.01538085937501
     drawPoint(this.map)
 
  const coord =   await this.drawCreated()
-console.log(coord)
+
  return coord
   }
 
@@ -68,7 +93,9 @@ console.log(coord)
 
 
     this.coordinateShow = false
-    console.log(this.layersList)
+
+  console.log( this.layersList);
+
   }
 
    drawCreated() {
@@ -92,18 +119,19 @@ console.log(coord)
 
   getAllMarkers() {
     console.log('get markers')
-
+    const msg = createMarkerCluster()
     this.layersList.forEach(item => {
 
 
-      console.log('looooooop')
+
         const marker = createMarker(item.lat , item.lng)
-      console.log(marker)
-      marker.addTo(this.map);
+
+
+      msg.addLayer(marker);
 
     })
 
-
+    this.map.addLayer(msg)
 
   }
 }

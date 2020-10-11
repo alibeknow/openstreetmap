@@ -1,5 +1,6 @@
 import * as L from 'leaflet'
 import  'leaflet-draw';
+import 'leaflet.markercluster'
 
 import marker2 from '../../../assets/marker-256.png'
 
@@ -14,7 +15,6 @@ const marker = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccq
 
 });
 
-console.log(greenIcon)
 
 
 export function drawPoint(map, options) {
@@ -27,6 +27,16 @@ export function createMarker(lat, lng) {
  const createdMarker = new L.marker([lat, lng], {
    icon: greenIcon
  });
- console.log(createdMarker)
+
   return createdMarker
+}
+
+
+export function createMarkerCluster() {
+  const mcg = L.markerClusterGroup({
+    chunkedLoading: true,
+    //singleMarkerMode: true,
+    spiderfyOnMaxZoom: false
+  });
+  return mcg
 }
