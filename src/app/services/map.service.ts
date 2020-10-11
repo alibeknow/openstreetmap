@@ -30,8 +30,8 @@ export class MapService {
     drawPoint(this.map)
 
  const coord =   await this.drawCreated()
-
-  return coord
+console.log(coord)
+ return coord
   }
 
   saveLayer() {
@@ -47,6 +47,7 @@ export class MapService {
 
 
     this.coordinateShow = false
+    console.log(this.layersList)
   }
 
    drawCreated() {
@@ -65,6 +66,10 @@ export class MapService {
 
       });
     })
+
+  }
+
+  getAllMarkers() {
 
   }
 }

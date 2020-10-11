@@ -20,14 +20,22 @@ export class LeftPanelComponent implements OnInit {
   constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-
+    console.log('init conmonent')
   }
 
  async drawPoint() {
+console.log('start add point')
 
-this.mapService.drawPoint()
 
 
+  let coord: any = await this.mapService.drawPoint()
+  this.coordinates = {
+    lat: coord.lat,
+    lng: coord.lng,
+    description: ''
+  }
+  console.log(this.coordinates)
+  //  console.log('finish add point')
 
   }
 
