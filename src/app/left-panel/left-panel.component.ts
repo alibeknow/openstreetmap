@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ThrowStmt } from '@angular/compiler';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MapService } from '../services/map.service'
 
 @Component({
@@ -8,9 +9,26 @@ import { MapService } from '../services/map.service'
 })
 export class LeftPanelComponent implements OnInit {
 
-  constructor(private mapService: MapService) { }
+  coordinates = {
+    lat: '',
+    lng: '',
+    description: ''
+  }
+
+  number = 'null'
+
+  constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
+
+  }
+
+ async drawPoint() {
+
+this.mapService.drawPoint()
+
+
+
   }
 
 }
