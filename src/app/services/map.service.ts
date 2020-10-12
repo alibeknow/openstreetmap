@@ -18,6 +18,7 @@ export class MapService {
    lng: '',
    description: ''
  }
+ currentMarker : any = null
  layersList : any = [
    {
     description: "",
@@ -73,15 +74,15 @@ lng: 63.41308593750001
 
     this.coordinateShow = true
 
-    drawPoint(this.map)
+  drawPoint(this.map)
 
- const coord =   await this.drawCreated()
-
- return coord
+ const coord :any  =   await this.drawCreated()
+  this.currentMarker = coord.leaflet_id
+ return coord.coord
   }
 
   saveLayer() {
-
+    console.log(this.map)
     this.layersList.push(this.currentCoordinates)
 
     this.currentCoordinates = {
@@ -93,7 +94,14 @@ lng: 63.41308593750001
 
 
     this.coordinateShow = false
+    console.log(this.currentMarker)
 
+
+    this.getAllMarkers()
+    if(this.map.hasLayer(this.currentMarker)) {
+      this.map.removeLayer(this.currentMarker)
+      this.currentMarker = null
+    }
   console.log( this.layersList);
 
   }
@@ -109,8 +117,9 @@ lng: 63.41308593750001
         // e.layer.addTo(this.map);
         // this.map.addLayer(e.layer)
         this.map.addLayer(e.layer)
-
-        resolve(e.layer.getLatLng())
+        console.log(e.layer)
+        resolve({coord: e.layer.getLatLng(),
+        leaflet_id: e.layer})
 
       });
     })

@@ -18,9 +18,10 @@ const marker = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccq
 
 
 export function drawPoint(map, options) {
-  new L.Draw.Marker(map, {
+const markerId =  new L.Draw.Marker(map, {
     icon: greenIcon
   }).enable()
+
 }
 
 export function createMarker(lat, lng) {
