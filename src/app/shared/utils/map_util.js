@@ -36,8 +36,10 @@ export function createMarker(lat, lng) {
 export function createMarkerCluster() {
   const mcg = L.markerClusterGroup({
     chunkedLoading: true,
-    //singleMarkerMode: true,
+    // singleMarkerMode: true,
     spiderfyOnMaxZoom: false
   });
   return mcg
 }
+
+

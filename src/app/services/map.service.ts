@@ -1,6 +1,7 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import 'leaflet-draw';
+import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 
 import { drawPoint, createMarker, createMarkerCluster } from '../shared/utils/map_util.js'
@@ -66,23 +67,30 @@ lat: 50.597186230587035,
 lng: 63.41308593750001
   }
  ]
+ localMarkers = []
  coordinateShow = false
+ prevMarker : any = null
+ markerCluster : any = null
 
   constructor() { }
 
  async drawPoint() {
 
+
+
+  this.map.on('click', this.mapClick)
+
     this.coordinateShow = true
 
-  drawPoint(this.map)
+//   drawPoint(this.map)
 
- const coord :any  =   await this.drawCreated()
-  this.currentMarker = coord.leaflet_id
- return coord.coord
+//  const coord :any  =   await this.drawCreated()
+//   this.currentMarker = coord.leaflet_id
+//  return coord.coord
   }
 
   saveLayer() {
-    console.log(this.map)
+
     this.layersList.push(this.currentCoordinates)
 
     this.currentCoordinates = {
@@ -94,15 +102,27 @@ lng: 63.41308593750001
 
 
     this.coordinateShow = false
-    console.log(this.currentMarker)
 
+
+
+
+      if(this.map.hasLayer(this.prevMarker)) {
+        this.map.removeLayer(this.prevMarker)
+        this.prevMarker = null
+      }
+
+
+      if(this.markerCluster) {
+
+        this.markerCluster.clearLayers()
+      }
 
     this.getAllMarkers()
-    if(this.map.hasLayer(this.currentMarker)) {
-      this.map.removeLayer(this.currentMarker)
-      this.currentMarker = null
-    }
-  console.log( this.layersList);
+
+
+    this.map.off('click', this.mapClick)
+
+
 
   }
 
@@ -117,7 +137,7 @@ lng: 63.41308593750001
         // e.layer.addTo(this.map);
         // this.map.addLayer(e.layer)
         this.map.addLayer(e.layer)
-        console.log(e.layer)
+
         resolve({coord: e.layer.getLatLng(),
         leaflet_id: e.layer})
 
@@ -127,8 +147,9 @@ lng: 63.41308593750001
   }
 
   getAllMarkers() {
-    console.log('get markers')
-    const msg = createMarkerCluster()
+
+    this.markerCluster = createMarkerCluster()
+
     this.layersList.forEach(item => {
 
 
@@ -136,11 +157,29 @@ lng: 63.41308593750001
         const marker = createMarker(item.lat , item.lng)
 
 
-      msg.addLayer(marker);
+      this.markerCluster.addLayer(marker);
 
     })
 
-    this.map.addLayer(msg)
+    this.map.addLayer(this.markerCluster)
+
+
+    // this.markerCluster = null
+
+  }
+  mapClick = (e)=> {
+
+
+      if(this.prevMarker) this.map.removeLayer(this.prevMarker)
+    const marker =  createMarker(e.latlng.lat, e.latlng.lng)
+    this.map.addLayer(marker)
+    this.currentCoordinates = {
+      ...e.latlng,
+      description: ''
+    }
+    this.localMarkers.push(marker)
+
+    this.prevMarker = marker
 
   }
 }

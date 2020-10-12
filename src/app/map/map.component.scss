@@ -3,6 +3,10 @@
   width: 100%;
 }
 
+#map.leaflet-container {
+  cursor: default;
+}
+
 #details-panel {
   text-align: left;
 }
