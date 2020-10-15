@@ -5,7 +5,6 @@ import 'leaflet-draw';
 import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
-import { MarkerPoint } from '../shared/models/marker-point'
 
 
 import { drawPoint, createMarker, createMarkerCluster } from '../shared/utils/map_util.js'
