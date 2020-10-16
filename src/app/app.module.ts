@@ -14,6 +14,7 @@ import {ResultsListComponent} from './results-list/results-list.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HeaderComponent } from './header/header.component';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { SignInComponent } from './sign-in/sign-in.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
     ResultsListComponent,
     SignUpComponent,
     HeaderComponent,
-    LeftPanelComponent
+    LeftPanelComponent,
+    SignInComponent
   ],
   imports: [
     BrowserModule,
