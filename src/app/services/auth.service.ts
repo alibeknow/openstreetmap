@@ -14,7 +14,9 @@ export class AuthService {
   constructor(private http : HttpClient) {
 
   }
-  registr() {
+  registr(user: User) {
+
+
 
   }
 
