@@ -1,0 +1,19 @@
+.left-panel__container {
+  width: 25%;
+  height: 100vh;
+background-color: white;
+ position: fixed;
+ top: 0;
+ left: 0;
+ z-index: 10000;
+}
+
+
+.left-panel__box {
+  margin: 100px 20px 100px 20px;
+
+}
+
+.form-container {
+  margin: 0 20px
+}
