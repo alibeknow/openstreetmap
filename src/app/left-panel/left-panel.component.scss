@@ -11,6 +11,14 @@ background-color: white;
 
 .left-panel__box {
   margin: 100px 20px 100px 20px;
+  flex-wrap: wrap;
+}
+
+.select-city__box {
+  width: 100%;
+  flex-basis: 100%;
+
+  margin-bottom: 5rem;
 
 }
 

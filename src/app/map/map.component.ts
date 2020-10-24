@@ -28,6 +28,7 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit () {
+    console.log('init map')
     this.initializeDefaultMapPoint();
     this.initializeMapOptions();
     // this.setBound()
@@ -114,7 +115,7 @@ export class MapComponent implements OnInit {
   }
 
   private createPoint() {
-    console.log('create point')
+
   }
 
 }

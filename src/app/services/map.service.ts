@@ -5,9 +5,13 @@ import 'leaflet-draw';
 import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
+import { stringify } from 'wkt';
 
 
-import { drawPoint, createMarker, createMarkerCluster } from '../shared/utils/map_util.js'
+import { HttpClient } from '@angular/common/http';
+
+
+import { drawPoint, createMarker, createMarkerCluster, createFeature } from '../shared/utils/map_util.js'
 
 
 @Injectable({
@@ -79,8 +83,9 @@ lng: 63.41308593750001
  lngInput : any = null
  latInput : any = null
  isNew : boolean = false
+ cityList : any = null
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
  async drawPoint() {
 
@@ -107,6 +112,23 @@ this.currentCoordinates = {
 
   saveLayer() {
 
+    //{ coordinates, name, userId, cityId }
+
+    const geometry = {
+      type: "Point",
+      coordinates: [this.currentCoordinates.lng, this.currentCoordinates.lat]
+    };
+const geoPoint = {
+  coordinates: stringify(geometry),
+  name: this.currentCoordinates.description,
+  userId: '01c6f03c-df5d-46b4-8f79-3eef43ed4d2f',
+  cityId: '42bd5f80-b954-4ee2-8bf8-3473df3a4dda'
+}
+
+
+    return this.http.post<{}>('/api/v1.0/geopoint',
+    geoPoint
+    )
     this.layersList.push(this.currentCoordinates)
     this.currentCoordinates = {
       lat: '',
@@ -233,6 +255,27 @@ this.layersList = this.layersList.filter(item=> {
 })
 
 this.getAllMarkers()
+  }
+
+  getCities() {
+
+  return this.http.get('/api/v1.0/city')
+  .subscribe((response)=> {
+
+    this.cityList = response
+  })
+
+
+  }
+
+  citySelect(e) {
+
+
+    const selectedCity = this.cityList.find(city=> city.id == e.target.value)
+    const feature = createFeature(selectedCity.coordinates)
+
+
+    this.map.fitBounds(feature.getBounds())
   }
 
 }

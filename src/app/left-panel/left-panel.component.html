@@ -1,5 +1,14 @@
 <div class="left-panel__container">
   <div class="left-panel__box d-flex justify-content-center">
+    <div class="select-city__box">
+    <select
+      (change)="mapService.citySelect($event)"
+    class="form-control">
+      <option disabled selected>Выберети город</option>
+      <option [value]="city.id" *ngFor="let city of mapService.cityList">{{city.name}}</option>
+
+    </select>
+  </div>
   <button
   *ngIf="!mapService.coordinateShow"
   type="button"

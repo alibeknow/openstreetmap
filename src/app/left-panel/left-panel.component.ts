@@ -23,11 +23,12 @@ export class LeftPanelComponent implements OnInit {
   constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    console.log('init conmonent')
+
     this.mapService.deskInput = this.deskInput
     this.mapService.formContainer = this.formContainer
     this.mapService.latInput = this.latInput
     this.mapService.lngInput = this.lngInput
+    this.mapService.getCities()
 
   }
 
@@ -39,7 +40,7 @@ setDescription(e) {
  async drawPoint() {
   this.clearInputs()
   // this.deskInput.nativeElement.value = ''
-console.log(this.deskInput)
+
 
  this.mapService.drawPoint()
 
@@ -57,5 +58,7 @@ console.log(this.deskInput)
   this.lngInput.nativeElement.value =  ''
   this.latInput.nativeElement.value = ''
   }
+
+
 
 }
