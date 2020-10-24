@@ -45,7 +45,8 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return !! this.token
+
+    return !! localStorage.getItem('auth-token')
   }
 
   logout() {

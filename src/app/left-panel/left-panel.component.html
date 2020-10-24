@@ -24,7 +24,7 @@
     <label for="exampleInputEmail1">Долгота</label>
     <input type="text"
      class="form-control"
-
+        disabled
        aria-describedby="emailHelp"
        placeholder=""
         [value]="mapService.currentCoordinates.lng"
@@ -51,7 +51,9 @@
 <div
 
 class="d-flex justify-content-center">
-  <button *ngIf="mapService.isNew; else notNew" class="btn btn-primary"
+  <button
+  [disabled]="mapService.buttonDisable"
+  *ngIf="mapService.isNew; else notNew" class="btn btn-primary"
   (click)="mapService.saveLayer()"
   >Сохранить</button>
   <ng-template #notNew>

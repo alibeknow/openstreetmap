@@ -5,13 +5,14 @@ import 'leaflet-draw';
 import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
-import { stringify } from 'wkt';
+import { stringify, parse } from 'wkt';
 
 
 import { HttpClient } from '@angular/common/http';
 
 
 import { drawPoint, createMarker, createMarkerCluster, createFeature } from '../shared/utils/map_util.js'
+
 
 
 @Injectable({
@@ -84,12 +85,13 @@ lng: 63.41308593750001
  latInput : any = null
  isNew : boolean = false
  cityList : any = null
+ buttonDisable = false
 
   constructor(private http: HttpClient) { }
 
  async drawPoint() {
 
-
+this.buttonDisable = false
 
 this.isNew = true
 
@@ -113,23 +115,27 @@ this.currentCoordinates = {
   saveLayer() {
 
     //{ coordinates, name, userId, cityId }
-
+this.buttonDisable = true
     const geometry = {
+      // src: '4326',
       type: "Point",
       coordinates: [this.currentCoordinates.lng, this.currentCoordinates.lat]
     };
+
+
 const geoPoint = {
-  coordinates: stringify(geometry),
+  coordinates: JSON.stringify(geometry),
   name: this.currentCoordinates.description,
-  userId: '01c6f03c-df5d-46b4-8f79-3eef43ed4d2f',
-  cityId: '42bd5f80-b954-4ee2-8bf8-3473df3a4dda'
+  userId: '06322846-ab7c-4374-b14c-1e6dd84d2a22',
+  cityId: 'ceecd600-2f45-40bc-ad70-734fedcd1e7d'
 }
 
 
-    return this.http.post<{}>('/api/v1.0/geopoint',
+    return this.http.post<{}>('/api/v1.0/geopoints',
     geoPoint
-    )
-    this.layersList.push(this.currentCoordinates)
+    ).subscribe((response)=> {
+
+      this.layersList.push(this.currentCoordinates)
     this.currentCoordinates = {
       lat: '',
       lng: '',
@@ -158,6 +164,8 @@ const geoPoint = {
 
 
     this.map.off('click', this.mapClick)
+    })
+
 
 
 
@@ -187,23 +195,31 @@ const geoPoint = {
 
 
 
-    this.markerCluster = createMarkerCluster()
+    this.http.get('/api/v1.0/geopoints')
+              .subscribe((result)=> {
+
+                this.layersList = result
+                this.markerCluster = createMarkerCluster({ chunkedLoading: true})
 
     this.layersList.forEach(item => {
 
 
 
-        const marker = createMarker(item.lat , item.lng)
+        const marker = createMarker(item.coordinates.coordinates[1] , item.coordinates.coordinates[0])
 
-        marker.properties = item.description
+        marker.properties = item.name
         marker.rid = item.id
 
       marker.on('click', this.markerClick)
       this.markerCluster.addLayer(marker);
 
     })
-
     this.map.addLayer(this.markerCluster)
+              })
+
+
+
+
 
 
     // this.markerCluster = null
