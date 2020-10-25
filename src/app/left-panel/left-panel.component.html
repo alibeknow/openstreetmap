@@ -4,7 +4,7 @@
     <select
       (change)="mapService.citySelect($event)"
     class="form-control">
-      <option disabled selected>Выберети город</option>
+
       <option [value]="city.id" *ngFor="let city of mapService.cityList">{{city.name}}</option>
 
     </select>

@@ -86,6 +86,8 @@ lng: 63.41308593750001
  isNew : boolean = false
  cityList : any = null
  buttonDisable = false
+ selectedCity : any = null
+ userId : string = null
 
   constructor(private http: HttpClient) { }
 
@@ -122,13 +124,18 @@ this.buttonDisable = true
       coordinates: [this.currentCoordinates.lng, this.currentCoordinates.lat]
     };
 
-
+    console.log(this.cityList[0])
+    console.log(this.userId)
+    if(!this.selectedCity) {
+      this.selectedCity = this.cityList[0]
+    }
 const geoPoint = {
   coordinates: JSON.stringify(geometry),
   name: this.currentCoordinates.description,
-  userId: '06322846-ab7c-4374-b14c-1e6dd84d2a22',
-  cityId: 'ceecd600-2f45-40bc-ad70-734fedcd1e7d'
+  userId: this.userId,
+  cityId: this.selectedCity.id
 }
+console.log(geoPoint.cityId)
 
 
     return this.http.post<{}>('/api/v1.0/geopoints',
@@ -197,7 +204,7 @@ const geoPoint = {
 
     this.http.get('/api/v1.0/geopoints')
               .subscribe((result)=> {
-
+                console.log(result)
                 this.layersList = result
                 this.markerCluster = createMarkerCluster({ chunkedLoading: true})
 
@@ -273,12 +280,14 @@ this.layersList = this.layersList.filter(item=> {
 this.getAllMarkers()
   }
 
-  getCities() {
+async  getCities() {
 
   return this.http.get('/api/v1.0/city')
   .subscribe((response)=> {
 
     this.cityList = response
+
+
   })
 
 
@@ -287,11 +296,16 @@ this.getAllMarkers()
   citySelect(e) {
 
 
-    const selectedCity = this.cityList.find(city=> city.id == e.target.value)
-    const feature = createFeature(selectedCity.coordinates)
+
+      this.selectedCity = this.cityList.find(city=> city.id == e.target.value)
+
+
+    const feature = createFeature(this.selectedCity.coordinates)
 
 
     this.map.fitBounds(feature.getBounds())
   }
+
+
 
 }

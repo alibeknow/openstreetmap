@@ -31,6 +31,7 @@ export class MapComponent implements OnInit {
     console.log('init map')
     this.initializeDefaultMapPoint();
     this.initializeMapOptions();
+
     // this.setBound()
   }
 
@@ -40,6 +41,9 @@ export class MapComponent implements OnInit {
     this.createMarker();
     this.setBound()
     this.mapService.getAllMarkers()
+    this.map.on('zoom', (e)=> {
+      console.log(this.map.getZoom())
+    })
   }
 
   getAddress (result: NominatimResponse) {

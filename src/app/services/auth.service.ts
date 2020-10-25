@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { User } from '../shared/interfaces';
 import { tap } from 'rxjs/operators'
 import { ThrowStmt } from '@angular/compiler';
+import { MapService } from './map.service';
 
 
 @Injectable({providedIn: 'root'})
@@ -11,7 +12,7 @@ import { ThrowStmt } from '@angular/compiler';
 export class AuthService {
 
   private token = null
-  constructor(private http : HttpClient) {
+  constructor(private http : HttpClient, private mapService : MapService) {
 
   }
   registr(user: User) {
@@ -21,15 +22,18 @@ export class AuthService {
   }
 
 
-  login(user: User) : Observable<{token: string}> {
+  login(user: User) : Observable<{token: string, userId: string}> {
 
 
     // return this.http.get<{}>('/api/v1.0/health-check')
-    return this.http.post<{token: string}>('/api/v1.0/auth/login',
+    return this.http.post<{token: string, userId : string}>('/api/v1.0/auth/login',
     user
     )
     .pipe(
-      tap(({token})=> {
+      tap(({token, userId})=> {
+        this.mapService.userId = userId
+        console.log(this.mapService)
+        localStorage.setItem('user-id', userId)
         localStorage.setItem('auth-token', token)
         this.setToken(token)
       })
@@ -53,5 +57,9 @@ export class AuthService {
     console.log('logout')
     this.setToken(null)
     localStorage.clear()
+  }
+
+  setUserId() {
+    this.mapService.userId = localStorage.getItem('user-id')
   }
 }

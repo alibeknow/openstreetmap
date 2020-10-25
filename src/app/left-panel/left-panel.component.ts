@@ -22,13 +22,14 @@ export class LeftPanelComponent implements OnInit {
 
   constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
 
-  ngOnInit() {
+ async ngOnInit() {
 
     this.mapService.deskInput = this.deskInput
     this.mapService.formContainer = this.formContainer
     this.mapService.latInput = this.latInput
     this.mapService.lngInput = this.lngInput
-    this.mapService.getCities()
+   await this.mapService.getCities()
+
 
   }
 
