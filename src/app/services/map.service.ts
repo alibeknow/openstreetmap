@@ -124,8 +124,7 @@ this.buttonDisable = true
       coordinates: [this.currentCoordinates.lng, this.currentCoordinates.lat]
     };
 
-    console.log(this.cityList[0])
-    console.log(this.userId)
+
     if(!this.selectedCity) {
       this.selectedCity = this.cityList[0]
     }
@@ -135,7 +134,7 @@ const geoPoint = {
   userId: this.userId,
   cityId: this.selectedCity.id
 }
-console.log(geoPoint.cityId)
+
 
 
     return this.http.post<{}>('/api/v1.0/geopoints',
@@ -167,7 +166,7 @@ console.log(geoPoint.cityId)
         this.markerCluster.clearLayers()
       }
 
-    this.getAllMarkers()
+    this.getAllMarkers(null)
 
 
     this.map.off('click', this.mapClick)
@@ -198,13 +197,13 @@ console.log(geoPoint.cityId)
 
   }
 
-  getAllMarkers() {
+  getAllMarkers(id) {
 
 
 
-    this.http.get('/api/v1.0/geopoints')
+    this.http.get(`/api/v1.0/geopoints/${id}`)
               .subscribe((result)=> {
-                console.log(result)
+
                 this.layersList = result
                 this.markerCluster = createMarkerCluster({ chunkedLoading: true})
 
@@ -221,6 +220,7 @@ console.log(geoPoint.cityId)
       this.markerCluster.addLayer(marker);
 
     })
+
     this.map.addLayer(this.markerCluster)
               })
 
@@ -277,34 +277,28 @@ this.layersList = this.layersList.filter(item=> {
   return item.id !== this.currentMarker.rid
 })
 
-this.getAllMarkers()
+this.getAllMarkers(this.selectedCity.id)
   }
 
 async  getCities() {
 
-  return this.http.get('/api/v1.0/city')
-  .subscribe((response)=> {
 
-    this.cityList = response
-
-
-  })
+    return this.http.get('/api/v1.0/city')
+    .subscribe((response)=>  this.cityList = response)
 
 
   }
 
   citySelect(e) {
 
-
-
       this.selectedCity = this.cityList.find(city=> city.id == e.target.value)
+      const feature = createFeature(this.selectedCity.coordinates)
+      this.map.fitBounds(feature.getBounds())
 
-
-    const feature = createFeature(this.selectedCity.coordinates)
-
-
-    this.map.fitBounds(feature.getBounds())
+      this.getAllMarkers(this.selectedCity.id)
   }
+
+
 
 
 
