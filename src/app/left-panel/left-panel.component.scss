@@ -19,9 +19,31 @@ background-color: white;
   flex-basis: 100%;
 
   margin-bottom: 5rem;
-
+  text-align: center;
 }
 
 .form-container {
   margin: 0 20px
 }
+
+
+.error {
+  border-color: red !important;
+  color: red !important;
+}
+
+.error option {
+  color: rgb(75, 73, 73);
+}
+
+.form-control option:disabled {
+  color: rgb(75, 73, 73)!important;
+}
+
+.error-label {
+  color: red;
+  font-size: 12px;
+  display: none;
+}
+
+

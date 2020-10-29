@@ -39,6 +39,11 @@ setDescription(e) {
 
 
  async drawPoint() {
+   if(!this.mapService.selectedCity) {
+     this.mapService.citySelectInvalid = true
+     console.log('select city')
+     return
+   }
   this.clearInputs()
   // this.deskInput.nativeElement.value = ''
 

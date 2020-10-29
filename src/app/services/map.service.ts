@@ -88,7 +88,7 @@ lng: 63.41308593750001
  buttonDisable = false
  selectedCity : any = null
  userId : string = null
-
+ citySelectInvalid: boolean = false
   constructor(private http: HttpClient) { }
 
  async drawPoint() {
@@ -290,10 +290,12 @@ async  getCities() {
   }
 
   citySelect(e) {
+    this.citySelectInvalid = false
 
       this.selectedCity = this.cityList.find(city=> city.id == e.target.value)
       const feature = createFeature(this.selectedCity.coordinates)
       this.map.fitBounds(feature.getBounds())
+      console.log('fit')
 
       this.getAllMarkers(this.selectedCity.id)
   }
