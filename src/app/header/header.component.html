@@ -1,0 +1,14 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-success justify-content-end header">
+
+<!-- <a
+*ngIf="!auth.isAuthenticated()"
+[routerLink]="['sign-up']" class="nav-link">Регистрация</a> -->
+<a
+*ngIf="!auth.isAuthenticated()"
+[routerLink]="['sign-in']"[routerLink]="['sign-in']" class="nav-link">Вход</a>
+<a
+*ngIf="auth.isAuthenticated()"
+[routerLink]="['sign-in']"[routerLink]="['sign-in']" class="nav-link"
+(click)="auth.logout()"
+>Выход</a>
+</nav>

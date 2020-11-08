@@ -4,6 +4,10 @@ import {DEFAULT_LATITUDE, DEFAULT_LONGITUDE} from '../app.constants';
 import {MapPoint} from '../shared/models/map-point.model';
 import {NominatimResponse} from '../shared/models/nominatim-response.model';
 
+import extent from '../../assets/extent'
+import { MapService } from '../services/map.service';
+
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -15,20 +19,31 @@ export class MapComponent implements OnInit {
   mapPoint: MapPoint;
   options: MapOptions;
   lastLayer: any;
-
+  mapExtent: extent;
   results: NominatimResponse[];
 
-  constructor () {
+  // _draw = Draw.drawLocal
+
+  constructor (private mapService: MapService) {
   }
 
   ngOnInit () {
+    console.log('init map')
     this.initializeDefaultMapPoint();
     this.initializeMapOptions();
+
+    // this.setBound()
   }
 
   initializeMap (map: Map) {
     this.map = map;
+    this.mapService.map = map
     this.createMarker();
+    this.setBound()
+    this.mapService.getAllMarkers(null)
+    this.map.on('zoom', (e)=> {
+      console.log(this.map.getZoom())
+    })
   }
 
   getAddress (result: NominatimResponse) {
@@ -42,9 +57,17 @@ export class MapComponent implements OnInit {
 
   private initializeMapOptions () {
     this.options = {
-      zoom: 12,
+      zoom: 5,
       layers: [
-        tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18, attribution: 'OSM'})
+        tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+          maxZoom: 18,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1
+        })
       ]
     }
   }
@@ -75,7 +98,6 @@ export class MapComponent implements OnInit {
     this.clearMap();
     const mapIcon = this.getDefaultIcon();
     const coordinates = latLng([this.mapPoint.latitude, this.mapPoint.longitude]);
-    this.lastLayer = marker(coordinates).setIcon(mapIcon).addTo(this.map);
     this.map.setView(coordinates, this.map.getZoom());
   }
 
@@ -91,4 +113,15 @@ export class MapComponent implements OnInit {
     if (this.map.hasLayer(this.lastLayer)) this.map.removeLayer(this.lastLayer);
   }
 
+  private setBound() {
+
+  this.map.setMaxBounds(extent)
+  }
+
+  private createPoint() {
+
+  }
+
 }
+
+
