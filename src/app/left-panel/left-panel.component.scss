@@ -6,6 +6,7 @@ background-color: white;
  top: 0;
  left: 0;
  z-index: 10000;
+ overflow: scroll;
 }
 
 
@@ -38,6 +39,17 @@ background-color: white;
 
 .form-control option:disabled {
   color: rgb(75, 73, 73)!important;
+}
+
+.load-file {
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.load-file img {
+  width: 20px;
+  height: 20px;
 }
 
 .error-label {

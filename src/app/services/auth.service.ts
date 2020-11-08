@@ -62,4 +62,5 @@ export class AuthService {
   setUserId() {
     this.mapService.userId = localStorage.getItem('user-id')
   }
+
 }

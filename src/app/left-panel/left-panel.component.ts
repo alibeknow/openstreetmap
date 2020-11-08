@@ -9,13 +9,15 @@ import { MapService } from '../services/map.service'
 })
 export class LeftPanelComponent implements OnInit {
   @ViewChild('deskInput', {static: true}) deskInput : ElementRef
+  @ViewChild('descriptionInput', {static: true}) descriptionInput : ElementRef
   @ViewChild('formContainer', {static: true}) formContainer : ElementRef
   @ViewChild('lngInput', {static: true}) lngInput : ElementRef
   @ViewChild('latInput', {static: true}) latInput : ElementRef
   coordinates = {
     lat: '',
     lng: '',
-    description: ''
+    description: '',
+    name: ''
   }
 
   number = 'null'
@@ -25,6 +27,7 @@ export class LeftPanelComponent implements OnInit {
  async ngOnInit() {
 
     this.mapService.deskInput = this.deskInput
+    this.mapService.descriptionInput = this.descriptionInput
     this.mapService.formContainer = this.formContainer
     this.mapService.latInput = this.latInput
     this.mapService.lngInput = this.lngInput
@@ -34,7 +37,8 @@ export class LeftPanelComponent implements OnInit {
   }
 
 setDescription(e) {
-  this.mapService.currentCoordinates.description = e.target.value
+  console.log(e)
+  this.mapService.currentCoordinates.name = e.target.value
 }
 
 
@@ -63,6 +67,7 @@ setDescription(e) {
     this.deskInput.nativeElement.value = ''
   this.lngInput.nativeElement.value =  ''
   this.latInput.nativeElement.value = ''
+  this.descriptionInput.nativeElement.value = ''
   }
 
 

@@ -22,7 +22,16 @@
   type="button"
   (click)="drawPoint()"
   class="btn btn-success">Добавить точку</button>
+  <div class="load-file "
+  *ngIf="!mapService.coordinateShow"
+  >
+    <input #input_file style="display: none;" (change)="mapService.handleFileChange($event)"  type="file"/>
+    <button type="button" class="btn btn-success" (click)="mapService.uploadFile(input_file)">
+      Загрузить файл
+    </button>
 </div>
+</div>
+
 <div class="form-container "
 [hidden]="!mapService.coordinateShow"
 #formContainer
@@ -51,10 +60,19 @@
   <div class="form-group">
     <label for="exampleInputPassword1">Происшествие</label>
     <input type="text" class="form-control"  placeholder=""
-    [value]="mapService.currentCoordinates.description"
+    [value]="mapService.currentCoordinates.name"
     (change)="setDescription($event)"
     #deskInput
     >
+  </div>
+  <div class="form-group"
+
+
+#descriptionInput
+>
+</div>
+  <div>
+
   </div>
 <div
 
@@ -64,12 +82,13 @@ class="d-flex justify-content-center">
   *ngIf="mapService.isNew; else notNew" class="btn btn-primary"
   (click)="mapService.saveLayer()"
   >Сохранить</button>
-  <ng-template #notNew>
+  <!-- <ng-template #notNew>
     <button  class="btn btn-primary"
     (click)="deleteLayer()"
     >Удалить</button>
-  </ng-template>
+  </ng-template> -->
 </div>
 </form>
+
 </div>
 </div>
