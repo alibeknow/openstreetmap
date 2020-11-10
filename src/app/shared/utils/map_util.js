@@ -42,4 +42,8 @@ export function createMarkerCluster() {
   return mcg
 }
 
+export function createFeature(layer) {
+  return L.geoJSON(layer)
+}
+
 

@@ -28,8 +28,10 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit () {
+    console.log('init map')
     this.initializeDefaultMapPoint();
     this.initializeMapOptions();
+
     // this.setBound()
   }
 
@@ -38,7 +40,10 @@ export class MapComponent implements OnInit {
     this.mapService.map = map
     this.createMarker();
     this.setBound()
-    this.mapService.getAllMarkers()
+    this.mapService.getAllMarkers(null)
+    this.map.on('zoom', (e)=> {
+      console.log(this.map.getZoom())
+    })
   }
 
   getAddress (result: NominatimResponse) {
@@ -114,7 +119,7 @@ export class MapComponent implements OnInit {
   }
 
   private createPoint() {
-    console.log('create point')
+
   }
 
 }

@@ -5,9 +5,14 @@ import 'leaflet-draw';
 import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
+import { stringify, parse } from 'wkt';
 
 
-import { drawPoint, createMarker, createMarkerCluster } from '../shared/utils/map_util.js'
+import { HttpClient } from '@angular/common/http';
+
+
+import { drawPoint, createMarker, createMarkerCluster, createFeature } from '../shared/utils/map_util.js'
+
 
 
 @Injectable({
@@ -20,7 +25,8 @@ export class MapService {
  currentCoordinates : any = {
    lat: '',
    lng: '',
-   description: ''
+   description: '',
+   name: ''
  }
  currentMarker : any = null
  layersList : any = [
@@ -75,21 +81,27 @@ lng: 63.41308593750001
  prevMarker : any = null
  markerCluster : any = null
  deskInput : any = null
+ descriptionInput : any = null
  formContainer : any = null
  lngInput : any = null
  latInput : any = null
  isNew : boolean = false
-
-  constructor() { }
+ cityList : any = null
+ buttonDisable = false
+ selectedCity : any = null
+ userId : string = null
+ citySelectInvalid: boolean = false
+  constructor(private http: HttpClient) { }
 
  async drawPoint() {
 
-
+this.buttonDisable = false
 
 this.isNew = true
 
 this.currentCoordinates = {
   description: '',
+  name: '',
   lat: '',
   lng: ''
 }
@@ -107,11 +119,37 @@ this.currentCoordinates = {
 
   saveLayer() {
 
-    this.layersList.push(this.currentCoordinates)
+    //{ coordinates, name, userId, cityId }
+this.buttonDisable = true
+    const geometry = {
+      // src: '4326',
+      type: "Point",
+      coordinates: [this.currentCoordinates.lng, this.currentCoordinates.lat]
+    };
+
+
+    if(!this.selectedCity) {
+      this.selectedCity = this.cityList[0]
+    }
+const geoPoint = {
+  coordinates: JSON.stringify(geometry),
+  name: this.currentCoordinates.name,
+  userId: this.userId,
+  cityId: this.selectedCity.id
+}
+
+
+
+    return this.http.post<{}>('/api/v1.0/geopoints',
+    geoPoint
+    ).subscribe((response)=> {
+
+      this.layersList.push(this.currentCoordinates)
     this.currentCoordinates = {
       lat: '',
       lng: '',
-      description: ''
+      description: '',
+      name: ''
     }
 
 
@@ -132,10 +170,12 @@ this.currentCoordinates = {
         this.markerCluster.clearLayers()
       }
 
-    this.getAllMarkers()
+    this.getAllMarkers(null)
 
 
     this.map.off('click', this.mapClick)
+    })
+
 
 
 
@@ -161,19 +201,29 @@ this.currentCoordinates = {
 
   }
 
-  getAllMarkers() {
+  getAllMarkers(id) {
 
 
 
-    this.markerCluster = createMarkerCluster()
+    this.http.get(`/api/v1.0/geopoints/${id}`)
+              .subscribe((result)=> {
+
+                this.layersList = result
+                this.markerCluster = createMarkerCluster({ chunkedLoading: true})
 
     this.layersList.forEach(item => {
 
 
 
-        const marker = createMarker(item.lat , item.lng)
-
-        marker.properties = item.description
+        const marker = createMarker(item.coordinates.coordinates[1] , item.coordinates.coordinates[0])
+        console.log(marker)
+        console.log(item)
+        marker.properties = {
+          name: item.name,
+          description: item.description
+        }
+        // marker.properties.name = item.name
+        // marker.properties.description = item.description
         marker.rid = item.id
 
       marker.on('click', this.markerClick)
@@ -182,6 +232,11 @@ this.currentCoordinates = {
     })
 
     this.map.addLayer(this.markerCluster)
+              })
+
+
+
+
 
 
     // this.markerCluster = null
@@ -195,7 +250,8 @@ this.currentCoordinates = {
     this.currentCoordinates = {
       id: uuidv4(),
       ...e.latlng,
-      description: ''
+      description: '',
+      name: ''
     }
     this.localMarkers.push(marker)
 
@@ -204,13 +260,19 @@ this.currentCoordinates = {
   }
 
   markerClick = (e)=> {
-    this.deskInput.nativeElement.value = e.target.properties
+    this.deskInput.nativeElement.value = e.target.properties.name
     this.lngInput.nativeElement.value = e.latlng.lng
     this.latInput.nativeElement.value = e.latlng.lat
+    // this.descriptionInput.nativeElement.value = e.target.properties.description
+
+    this.descriptionInput.nativeElement.innerHTML = e.target.properties.description
+    console.log(e.target.properties)
     this.currentCoordinates = {
       lat: e.latlng.lat,
       lng: e.latlng.lng,
-      description: e.target.properties
+      description: e.target.properties.description,
+      name: e.target.properties.name
+
     }
     this.formContainer.nativeElement.hidden = false
     this.currentMarker = e.target
@@ -223,7 +285,8 @@ this.map.removeLayer(this.currentMarker)
 this.currentCoordinates = {
   lat: '',
   lng: '',
-  description: ''
+  description: '',
+  name: ''
 }
 
 
@@ -232,7 +295,56 @@ this.layersList = this.layersList.filter(item=> {
   return item.id !== this.currentMarker.rid
 })
 
-this.getAllMarkers()
+this.getAllMarkers(this.selectedCity.id)
   }
+
+async  getCities() {
+
+
+    return this.http.get('/api/v1.0/city')
+    .subscribe((response)=>  this.cityList = response)
+
+
+  }
+
+  citySelect(e) {
+    this.citySelectInvalid = false
+
+      this.selectedCity = this.cityList.find(city=> city.id == e.target.value)
+      const feature = createFeature(this.selectedCity.coordinates)
+      this.map.fitBounds(feature.getBounds())
+      console.log('fit')
+
+      this.getAllMarkers(this.selectedCity.id)
+  }
+
+
+
+uploadFile(input_file) {
+  if(!this.selectedCity) {
+    this.citySelectInvalid = true
+    console.log('select city')
+    return
+  }
+  input_file.click()
+  input_file.value = ''
+
+}
+
+handleFileChange(e) {
+console.log(this.selectedCity)
+  const data = new FormData()
+  data.append('file', e.target.files[0])
+  data.append('cityId', this.selectedCity.id)
+  data.append('userId', this.userId)
+
+  return this.http.post<{}>('/api/v1.0/geopoints/upload',
+  data
+  ).subscribe(result=> {
+    this.getAllMarkers(null)
+console.log(result)
+  })
+  console.log(e.target.files)
+}
 
 }

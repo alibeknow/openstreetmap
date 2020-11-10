@@ -6,14 +6,56 @@ background-color: white;
  top: 0;
  left: 0;
  z-index: 10000;
+ overflow: scroll;
 }
 
 
 .left-panel__box {
   margin: 100px 20px 100px 20px;
+  flex-wrap: wrap;
+}
 
+.select-city__box {
+  width: 100%;
+  flex-basis: 100%;
+
+  margin-bottom: 5rem;
+  text-align: center;
 }
 
 .form-container {
   margin: 0 20px
 }
+
+
+.error {
+  border-color: red !important;
+  color: red !important;
+}
+
+.error option {
+  color: rgb(75, 73, 73);
+}
+
+.form-control option:disabled {
+  color: rgb(75, 73, 73)!important;
+}
+
+.load-file {
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.load-file img {
+  width: 20px;
+  height: 20px;
+}
+
+.error-label {
+  color: red;
+  font-size: 12px;
+  display: none;
+}
+
+
