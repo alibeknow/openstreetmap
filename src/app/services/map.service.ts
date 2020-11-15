@@ -6,12 +6,15 @@ import { VirtualTimeScheduler } from 'rxjs';
 import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { stringify, parse } from 'wkt';
+import {SERVER_URL} from '../app.constants'
 
 
 import { HttpClient } from '@angular/common/http';
 
 
-import { drawPoint, createMarker, createMarkerCluster, createFeature } from '../shared/utils/map_util.js'
+import { drawPoint, createMarker, createMarkerCluster, createFeature, wait } from '../shared/utils/map_util.js'
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
+
 
 
 
@@ -28,6 +31,9 @@ export class MapService {
    description: '',
    name: ''
  }
+ showImage: boolean = false
+ imgDesk : any = null
+ cdr : any = null
  currentMarker : any = null
  layersList : any = [
    {
@@ -76,6 +82,7 @@ lat: 50.597186230587035,
 lng: 63.41308593750001
   }
  ]
+markerImages: any = []
  localMarkers = []
  coordinateShow = false
  prevMarker : any = null
@@ -216,11 +223,11 @@ const geoPoint = {
 
 
         const marker = createMarker(item.coordinates.coordinates[1] , item.coordinates.coordinates[0])
-        console.log(marker)
-        console.log(item)
+
         marker.properties = {
           name: item.name,
-          description: item.description
+          description: item.description,
+          link: item.google_link
         }
         // marker.properties.name = item.name
         // marker.properties.description = item.description
@@ -259,14 +266,29 @@ const geoPoint = {
 
   }
 
-  markerClick = (e)=> {
-    this.deskInput.nativeElement.value = e.target.properties.name
-    this.lngInput.nativeElement.value = e.latlng.lng
-    this.latInput.nativeElement.value = e.latlng.lat
-    // this.descriptionInput.nativeElement.value = e.target.properties.description
+  markerClick = async (e)=> {
 
-    this.descriptionInput.nativeElement.innerHTML = e.target.properties.description
-    console.log(e.target.properties)
+    let result
+    result = await this.http.post<{files: any, downloaded: boolean}>('/api/v1.0/geopoints/image', {
+      id: e.target.rid,
+      link: e.target.properties.link
+    }).toPromise()
+
+console.log(result)
+
+this.markerImages = []
+this.coordinateShow = true
+    this.markerImages = result.files.map(item=> `/uploads/${item}`)
+
+
+    this.currentCoordinates.name = e.target.properties.name
+    this.currentCoordinates.lat = e.latlng.lat
+    this.currentCoordinates.lng = e.latlng.lng
+
+      this.showImage = true
+    this.cdr.detectChanges()
+
+
     this.currentCoordinates = {
       lat: e.latlng.lat,
       lng: e.latlng.lng,
@@ -274,9 +296,15 @@ const geoPoint = {
       name: e.target.properties.name
 
     }
-    this.formContainer.nativeElement.hidden = false
+    // this.formContainer.nativeElement.hidden = false
+
     this.currentMarker = e.target
     this.isNew = false
+    //console.log(this.formContainer.nativeElement.children[3].children[0].attributes[2].textContent)
+
+
+    this.cdr.detectChanges()
+
   }
 
   deleteLayer() {
@@ -313,7 +341,7 @@ async  getCities() {
       this.selectedCity = this.cityList.find(city=> city.id == e.target.value)
       const feature = createFeature(this.selectedCity.coordinates)
       this.map.fitBounds(feature.getBounds())
-      console.log('fit')
+
 
       this.getAllMarkers(this.selectedCity.id)
   }
@@ -342,9 +370,9 @@ console.log(this.selectedCity)
   data
   ).subscribe(result=> {
     this.getAllMarkers(null)
-console.log(result)
+
   })
-  console.log(e.target.files)
+
 }
 
 }
