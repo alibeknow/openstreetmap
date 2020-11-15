@@ -60,22 +60,26 @@
     >
   </div>
   <div class="form-group">
-    <label for="exampleInputPassword1">Происшествие</label>
+    <label for="exampleInputPassword1">Название</label>
     <input type="text" class="form-control"  placeholder=""
     [value]="mapService.currentCoordinates.name"
     (change)="setDescription($event)"
 
     >
   </div>
-
+<div *ngIf="!isNew">
 <div  #imgdesc
 
 class="image-box" >
   <img
   *ngFor="let item of mapService.markerImages"
   [src]="item" alt="">
-</div>
 
+</div>
+<div *ngFor="let point of mapService.currentCoordinates.description">
+  {{point.description}}
+</div>
+</div>
 <div
 
 class="d-flex justify-content-center">

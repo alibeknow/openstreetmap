@@ -7,7 +7,7 @@ import { resolve } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import { stringify, parse } from 'wkt';
 import {SERVER_URL} from '../app.constants'
-
+import { CurrentCoordinate } from '../shared/models/current-point'
 
 import { HttpClient } from '@angular/common/http';
 
@@ -107,12 +107,13 @@ this.buttonDisable = false
 this.isNew = true
 
 this.currentCoordinates = {
-  description: '',
+  description: [],
   name: '',
   lat: '',
   lng: ''
 }
 
+this.cdr.detectChanges()
   this.map.on('click', this.mapClick)
 
     this.coordinateShow = true
@@ -152,12 +153,7 @@ const geoPoint = {
     ).subscribe((response)=> {
 
       this.layersList.push(this.currentCoordinates)
-    this.currentCoordinates = {
-      lat: '',
-      lng: '',
-      description: '',
-      name: ''
-    }
+    this.currentCoordinates = new CurrentCoordinate()
 
 
 
@@ -257,9 +253,10 @@ const geoPoint = {
     this.currentCoordinates = {
       id: uuidv4(),
       ...e.latlng,
-      description: '',
+      description: [],
       name: ''
     }
+    this.cdr.detectChanges()
     this.localMarkers.push(marker)
 
     this.prevMarker = marker
@@ -288,7 +285,7 @@ this.coordinateShow = true
       this.showImage = true
     this.cdr.detectChanges()
 
-
+console.log(e.target.properties.description)
     this.currentCoordinates = {
       lat: e.latlng.lat,
       lng: e.latlng.lng,

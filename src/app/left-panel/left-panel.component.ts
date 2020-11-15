@@ -47,7 +47,7 @@ setDescription(e) {
   this.clearInputs()
   // this.deskInput.nativeElement.value = ''
 
-
+this.mapService.isNew = true
  this.mapService.drawPoint()
 
   }
