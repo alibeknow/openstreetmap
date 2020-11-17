@@ -342,9 +342,9 @@ console.log(this.selectedCity)
   data
   ).subscribe(result=> {
     this.getAllMarkers(null)
-console.log(result)
+
   })
-  console.log(e.target.files)
+  
 }
 
 }
