@@ -76,11 +76,20 @@ class="image-box" >
   [src]="item" alt="">
 
 </div>
-<div *ngIf="mapService.currentCoordinates.description">
-<div *ngFor="let point of mapService.currentCoordinates.description">
+<div class="point-description"
+*ngIf="mapService.currentCoordinates.description">
+<div
+*ngFor="let point of mapService.currentCoordinates.description">
   {{point.description}}
 </div>
 </div>
+<input
+#input_image
+(change)="mapService.addImageHandle($event)"
+type="file" style="display: none;"/>
+<button
+(click)="mapService.addImage(input_image)"
+class="add-image btn btn-success">Добавить картинку</button>
 </div>
 <div
 
