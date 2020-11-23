@@ -41,15 +41,34 @@ background-color: white;
   color: rgb(75, 73, 73)!important;
 }
 
+.image-box img {
+  max-width: 90%;
+  margin-top: 15px;
+}
+.point-description {
+  margin-top: 15px;
+}
+
 .load-file {
   margin-top: 10px;
   width: 100%;
   text-align: center;
 }
 
+.add-image {
+  margin-top: 15px;
+}
+
 .load-file img {
   width: 20px;
   height: 20px;
+}
+
+.spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .error-label {

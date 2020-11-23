@@ -4,6 +4,9 @@
     "outDir": "../out-tsc/e2e",
     "module": "commonjs",
     "target": "es5",
+    "lib": [
+      "es2019"
+    ],
     "types": [
       "jasmine",
       "jasminewd2",

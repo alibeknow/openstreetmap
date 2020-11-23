@@ -1,6 +1,7 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { MapService } from '../services/map.service'
+import { CurrentCoordinate } from '../shared/models/current-point'
 
 @Component({
   selector: 'app-left-panel',
@@ -8,11 +9,8 @@ import { MapService } from '../services/map.service'
   styleUrls: ['./left-panel.component.scss']
 })
 export class LeftPanelComponent implements OnInit {
-  @ViewChild('deskInput', {static: true}) deskInput : ElementRef
-  @ViewChild('descriptionInput', {static: true}) descriptionInput : ElementRef
+  @ViewChild('imgdesc', {static: true}) imgDesk : ElementRef
   @ViewChild('formContainer', {static: true}) formContainer : ElementRef
-  @ViewChild('lngInput', {static: true}) lngInput : ElementRef
-  @ViewChild('latInput', {static: true}) latInput : ElementRef
   coordinates = {
     lat: '',
     lng: '',
@@ -25,12 +23,10 @@ export class LeftPanelComponent implements OnInit {
   constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
 
  async ngOnInit() {
-
-    this.mapService.deskInput = this.deskInput
-    this.mapService.descriptionInput = this.descriptionInput
-    this.mapService.formContainer = this.formContainer
-    this.mapService.latInput = this.latInput
-    this.mapService.lngInput = this.lngInput
+   console.log(this.imgDesk)
+  this.mapService.cdr = this.cdr
+  this.mapService.imgDesk = this.imgDesk
+  this.mapService.formContainer = this.formContainer
    await this.mapService.getCities()
 
 
@@ -51,7 +47,7 @@ setDescription(e) {
   this.clearInputs()
   // this.deskInput.nativeElement.value = ''
 
-
+this.mapService.isNew = true
  this.mapService.drawPoint()
 
   }
@@ -59,15 +55,17 @@ setDescription(e) {
   deleteLayer() {
     this.clearInputs()
     // this.mapService.coordinateShow = true
-    this.formContainer.nativeElement.hidden = true
+    // this.formContainer.nativeElement.hidden = true
     this.mapService.deleteLayer()
+  }
+  refresh() {
+    this.cdr.detectChanges()
   }
 
   clearInputs() {
-    this.deskInput.nativeElement.value = ''
-  this.lngInput.nativeElement.value =  ''
-  this.latInput.nativeElement.value = ''
-  this.descriptionInput.nativeElement.value = ''
+
+    this.mapService.currentCoordinates = new CurrentCoordinate();
+    this.mapService.markerImages = []
   }
 
 

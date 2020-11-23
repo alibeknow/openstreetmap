@@ -46,4 +46,12 @@ export function createFeature(layer) {
   return L.geoJSON(layer)
 }
 
+export function wait(time) {
+  return new Promise((resolve, reject)=> {
+    setTimeout(()=> {
+resolve()
+    }, time)
+  })
+}
+
 
