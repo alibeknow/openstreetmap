@@ -374,10 +374,6 @@ console.log(this.selectedCity)
     this.loadingKml = false
     this.getAllMarkers(null)
 
-<<<<<<< HEAD
-  })
-  
-=======
   })
 
 }
@@ -426,7 +422,6 @@ this.coordinateShow = true
 //     }
 
   })
->>>>>>> 351ad26161ea7f76e9457e06278b08c23ab26012
 }
 
 }
