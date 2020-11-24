@@ -15,6 +15,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { HeaderComponent } from './header/header.component';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SignInComponent } from './sign-in/sign-in.component';
     SignUpComponent,
     HeaderComponent,
     LeftPanelComponent,
-    SignInComponent
+    SignInComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

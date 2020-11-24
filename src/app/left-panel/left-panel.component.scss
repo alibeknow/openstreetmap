@@ -64,6 +64,13 @@ background-color: white;
   height: 20px;
 }
 
+.spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .error-label {
   color: red;
   font-size: 12px;

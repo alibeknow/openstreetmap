@@ -31,6 +31,11 @@
     </button>
 </div>
 </div>
+<div
+*ngIf="mapService.loadingKml"
+class="spinner">
+  <app-spinner></app-spinner>
+</div>
 
 <div class="form-container "
 [hidden]="!mapService.coordinateShow"

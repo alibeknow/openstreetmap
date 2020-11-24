@@ -83,6 +83,7 @@ lat: 50.597186230587035,
 lng: 63.41308593750001
   }
  ]
+ loadingKml : boolean = false
 markerImages: any = []
  localMarkers = []
  coordinateShow = false
@@ -360,6 +361,7 @@ uploadFile(input_file) {
 }
 
 handleFileChange(e) {
+  this.loadingKml = true
 console.log(this.selectedCity)
   const data = new FormData()
   data.append('file', e.target.files[0])
@@ -369,6 +371,7 @@ console.log(this.selectedCity)
   return this.http.post<{}>('/api/v1.0/geopoints/upload',
   data
   ).subscribe(result=> {
+    this.loadingKml = false
     this.getAllMarkers(null)
 
   })
