@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { stringify, parse } from 'wkt';
 import {SERVER_URL} from '../app.constants'
 import { CurrentCoordinate } from '../shared/models/current-point'
-
+import {environment} from '../../environments/environment'
 import { HttpClient } from '@angular/common/http';
 
 
@@ -95,6 +95,7 @@ markerImages: any = []
  lngInput : any = null
  latInput : any = null
  isNew : boolean = false
+ notNew : boolean = true
  cityList : any = null
  buttonDisable = false
  selectedCity : any = null
@@ -151,7 +152,7 @@ const geoPoint = {
 
 
 
-    return this.http.post<{}>('/api/v1.0/geopoints',
+    return this.http.post<{}>(`${environment.apiUrl}/api/v1.0/geopoints`,
     geoPoint
     ).subscribe((response)=> {
 
@@ -211,7 +212,7 @@ const geoPoint = {
 
 
 
-    this.http.get(`/api/v1.0/geopoints/${id}`)
+    this.http.get(`${environment.apiUrl}/api/v1.0/geopoints/${id}`)
               .subscribe((result)=> {
 
                 this.layersList = result
@@ -276,7 +277,7 @@ const geoPoint = {
   markerClick = async (e)=> {
 
     let result
-    result = await this.http.post<{files: any, downloaded: boolean}>('/api/v1.0/geopoints/image', {
+    result = await this.http.post<{files: any, downloaded: boolean}>(`${environment.apiUrl}/api/v1.0/geopoints/image`, {
       id: e.target.rid,
       link: e.target.properties.link
     }).toPromise()
@@ -285,7 +286,7 @@ console.log(e.target.properties.description)
 
 this.markerImages = []
 this.coordinateShow = true
-    this.markerImages = result.files.map(item=> `/uploads/${item}`)
+    this.markerImages = result.files.map(item=> `${environment.apiUrl}/uploads/${item}`)
 
     this.currentCoordinates.pointId = e.target.rid
     this.currentCoordinates.name = e.target.properties.name
@@ -330,7 +331,7 @@ this.getAllMarkers(this.selectedCity.id)
 async  getCities() {
 
 
-    return this.http.get('/api/v1.0/city')
+    return this.http.get(`${environment.apiUrl}/api/v1.0/city`)
     .subscribe((response)=>  this.cityList = response)
 
 
@@ -368,7 +369,7 @@ console.log(this.selectedCity)
   data.append('cityId', this.selectedCity.id)
   data.append('userId', this.userId)
 
-  return this.http.post<{}>('/api/v1.0/geopoints/upload',
+  return this.http.post<{}>(`${environment.apiUrl}/api/v1.0/geopoints/upload`,
   data
   ).subscribe(result=> {
     this.loadingKml = false
@@ -389,10 +390,10 @@ addImageHandle(e) {
   const data = new FormData()
   data.append('file', e.target.files[0])
   data.append('pointId', this.currentCoordinates.pointId)
-  return this.http.post<{files: any}>('/api/v1.0/geopoints/saveImage',
+  return this.http.post<{files: any}>(`${environment.apiUrl}/api/v1.0/geopoints/saveImage`,
   data
   ).subscribe(async (results)=> {
-  const  result = await this.http.post<{files: any, downloaded: boolean}>('/api/v1.0/geopoints/image', {
+  const  result = await this.http.post<{files: any, downloaded: boolean}>(`${environment.apiUrl}/api/v1.0/geopoints/image`, {
       id: this.currentCoordinates.pointId,
 
     }).toPromise()
@@ -401,7 +402,7 @@ console.log(result)
 
 this.markerImages = []
 this.coordinateShow = true
-    this.markerImages = result.files.map(item=> `/uploads/${item}`)
+    this.markerImages = result.files.map(item=> `${environment.apiUrl}/uploads/${item}`)
 
 
     // this.currentCoordinates.name = e.target.properties.name

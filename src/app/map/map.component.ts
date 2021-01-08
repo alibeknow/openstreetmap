@@ -3,7 +3,7 @@ import {icon, latLng, LeafletMouseEvent, Map, MapOptions, marker, tileLayer} fro
 import {DEFAULT_LATITUDE, DEFAULT_LONGITUDE} from '../app.constants';
 import {MapPoint} from '../shared/models/map-point.model';
 import {NominatimResponse} from '../shared/models/nominatim-response.model';
-
+import { environment } from '../../environments/environment'
 import extent from '../../assets/extent'
 import { MapService } from '../services/map.service';
 
@@ -59,7 +59,7 @@ export class MapComponent implements OnInit {
     this.options = {
       zoom: 5,
       layers: [
-        tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        tileLayer(environment.tileUrl, {
           maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
 			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -80,7 +80,7 @@ export class MapComponent implements OnInit {
     };
   }
 
-  private onMapClick (e: LeafletMouseEvent) {
+   onMapClick (e: LeafletMouseEvent) {
     this.clearMap();
     this.updateMapPoint(e.latlng.lat, e.latlng.lng);
     this.createMarker();

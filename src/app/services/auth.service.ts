@@ -5,6 +5,7 @@ import { User } from '../shared/interfaces';
 import { tap } from 'rxjs/operators'
 import { ThrowStmt } from '@angular/compiler';
 import { MapService } from './map.service';
+import { environment } from '../../environments/environment'
 
 
 @Injectable({providedIn: 'root'})
@@ -26,7 +27,7 @@ export class AuthService {
 
 
     // return this.http.get<{}>('/api/v1.0/health-check')
-    return this.http.post<{token: string, userId : string}>('/api/v1.0/auth/login',
+    return this.http.post<{token: string, userId : string}>(`${environment.apiUrl}/api/v1.0/auth/login`,
     user
     )
     .pipe(

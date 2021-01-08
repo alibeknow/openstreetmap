@@ -20,7 +20,7 @@ export class LeftPanelComponent implements OnInit {
 
   number = 'null'
 
-  constructor(private mapService: MapService, private cdr: ChangeDetectorRef) { }
+  constructor(public mapService: MapService, private cdr: ChangeDetectorRef) { }
 
  async ngOnInit() {
    console.log(this.imgDesk)
