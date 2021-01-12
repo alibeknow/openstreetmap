@@ -16,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { CreateRouteComponent } from './create-route/create-route.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SpinnerComponent } from './spinner/spinner.component';
     HeaderComponent,
     LeftPanelComponent,
     SignInComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    CreateRouteComponent
   ],
   imports: [
     BrowserModule,

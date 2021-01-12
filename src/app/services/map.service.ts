@@ -9,10 +9,10 @@ import { stringify, parse } from 'wkt';
 import {SERVER_URL} from '../app.constants'
 import { CurrentCoordinate } from '../shared/models/current-point'
 import {environment} from '../../environments/environment'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
 
-import { drawPoint, createMarker, createMarkerCluster, createFeature, wait } from '../shared/utils/map_util.js'
+import { drawPoint, createMarker, createMarkerCluster, createFeature, wait, leafletCreateRoute, addRouteToMap } from '../shared/utils/map_util.js'
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 
@@ -32,6 +32,7 @@ export class MapService {
    description: [] ,
    name: ''
  }
+ routeCoordinates : any = []
  showImage: boolean = false
  imgDesk : any = null
  cdr : any = null
@@ -422,6 +423,41 @@ this.coordinateShow = true
 
 //     }
 
+  })
+}
+
+createRoute() {
+  const arr = []
+  const marker = createMarker(50, 50, true)
+  this.map.addLayer(marker)
+  // this.map.removeLayer(marker)
+  this.map.on('mousemove', (e)=> {
+   marker.setLatLng(e.latlng)
+   
+   // console.log(e)
+  })
+
+  this.map.on('click', async (e)=> {
+    this.routeCoordinates.push(e.latlng)
+
+    const savedMarkerStart = createMarker(e.latlng.lat, e.latlng.lng, true)
+    const savedMarkerEnd = createMarker(e.latlng.lat, e.latlng.lng, true)
+    this.map.addLayer(savedMarkerStart)
+    this.map.addLayer(savedMarkerEnd)
+    this.map.off('mousemove')
+    console.log(savedMarkerStart)
+   
+    if(this.routeCoordinates.length == 2) {
+      console.log(this.routeCoordinates[0])
+      const url = environment.graphopperUrl + '/route?' + 'point=' + this.routeCoordinates[0].lat + ',' + this.routeCoordinates[0].lng + '&point=' + this.routeCoordinates[1].lat + ',' + this.routeCoordinates[1].lng + '&type=json&locale=ru-RU&key=&elevation=false&profile=car&points_encoded=false'
+      //console.log('here', savedMarkerStart, savedMarkerEnd)
+     // leafletCreateRoute(arr[0], arr[1]).addTo(this.map)
+      const  result = await this.http.get<{paths: any, downloaded: boolean}>(url).toPromise()
+      console.log(result)
+
+      addRouteToMap(result.paths[0].points.coordinates).addTo(this.map)
+    }
+   
   })
 }
 

@@ -1,8 +1,12 @@
 import * as L from 'leaflet'
 import  'leaflet-draw';
 import 'leaflet.markercluster'
+import 'leaflet-routing-machine'
+import 'lrm-graphhopper'
+import {environment} from '../../../environments/environment'
 
 import marker2 from '../../../assets/marker-256.png'
+import markerForRoute from '../../../assets/route_marker.png'
 
 
 
@@ -15,6 +19,12 @@ const marker = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccq
 
 });
 
+const routeIcon = L.icon({
+  iconUrl: markerForRoute,
+  shadowUrl: null,
+  iconSize: new L.Point(26, 26),
+})
+
 
 
 export function drawPoint(map, options) {
@@ -24,9 +34,9 @@ const markerId =  new L.Draw.Marker(map, {
 
 }
 
-export function createMarker(lat, lng) {
+export function createMarker(lat, lng, marker) {
  const createdMarker = new L.marker([lat, lng], {
-   icon: greenIcon
+   icon: marker ? routeIcon: greenIcon
  });
 
   return createdMarker
@@ -44,6 +54,52 @@ export function createMarkerCluster() {
 
 export function createFeature(layer) {
   return L.geoJSON(layer)
+}
+
+export function leafletCreateRoute(start, end) {
+  console.log('here')
+ const route = L.Routing.control({
+    waypoints: [
+        L.latLng(start.lat, start.lng),
+        L.latLng(end.lat, end.lng)
+    ],
+    router: L.Routing.graphHopper(undefined,  {
+      
+     
+      serviceUrl: `${environment.graphopperUrl}/route`,
+      urlParameters: { 
+        'Access-Control-Expose-Headers': 'Location',
+        limit: 'The X-RateLimit-Limit', 
+        remaining: 'The X-RateLimit-Remaining',
+        reset: 'The X-RateLimit-Reset',
+        credits: 'The X-RateLimit-Credits',
+       profile: 'car',
+        locale: 'ru-Ru',
+        points_encoded:false
+      }
+
+  }),
+  })
+  return route
+}
+
+export function addRouteToMap(feature) {
+  var featureJson = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "LineString",
+          "coordinates": feature
+        }
+      }
+    ]
+  }
+const layer = L.geoJSON(featureJson)
+console.log(layer)
+return layer
 }
 
 export function wait(time) {

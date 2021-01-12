@@ -1,0 +1,33 @@
+.route_marker-box {
+    display: flex;
+    align-items: center;
+    margin: 10px 20px;
+    justify-content: center;
+
+}
+
+.route_marker {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+}
+
+.route_marker.point_end {
+    background-color: black;
+}
+
+.route_marker::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+    position: absolute;
+    color: black;
+    border-radius: 50%;
+    right: 30%;
+    top: 30%;
+}
+

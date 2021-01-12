@@ -54,9 +54,9 @@ background-color: white;
 }
 
 .load-file {
-  margin-top: 10px;
-  width: 100%;
-  text-align: center;
+  // margin-top: 10px;
+  // width: 100%;
+  // text-align: center;
 }
 
 .add-image {
@@ -85,6 +85,41 @@ background-color: white;
 
 .add-img {
   margin-bottom: 50px;
+}
+
+
+.tools_box {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+  
+}
+
+.tool_wrapper {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  align-items: center;
+  margin-right: 25px;
+  margin-bottom: 30px;
+}
+
+.add-marker {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #9ccc65;
+}
+
+.add-marker img {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
 }
 
 

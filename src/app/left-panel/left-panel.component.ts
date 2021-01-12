@@ -15,8 +15,10 @@ export class LeftPanelComponent implements OnInit {
     lat: '',
     lng: '',
     description: '',
-    name: ''
+    name: '',
+    
   }
+  componentName = ''
 
   number = 'null'
 
@@ -40,6 +42,7 @@ setDescription(e) {
 
  async drawPoint() {
    if(!this.mapService.selectedCity) {
+    this.componentName = "addCoordinate"
      this.mapService.citySelectInvalid = true
      console.log('select city')
      return
@@ -66,6 +69,13 @@ this.mapService.isNew = true
 
     this.mapService.currentCoordinates = new CurrentCoordinate();
     this.mapService.markerImages = []
+  }
+
+
+  createRoute() {
+    this.componentName = "createRoute"
+    console.log('create route btn')
+    this.mapService.createRoute()
   }
 
 

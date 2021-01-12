@@ -17,18 +17,39 @@
     [ngStyle]="{'display': mapService.citySelectInvalid ? 'inline-block' : 'none'}"
     class="error-label">Выберите территорию</span>
   </div>
+
+  <div class="tools_box">
+  <div class="tool_wrapper">
   <button
 
   type="button"
   (click)="drawPoint()"
-  class="btn btn-success">Добавить точку</button>
+  class="btn add-marker">
+  <img src="/assets/create_marker.png" alt="" srcset="">
+</button>
+<span >Добавить   точку</span>
+</div>
   <div class="load-file "
 
   >
     <input #input_file style="display: none;" (change)="mapService.handleFileChange($event)"  type="file"/>
-    <button type="button" class="btn btn-success" (click)="mapService.uploadFile(input_file)">
-      Загрузить файл
+    <div class="tool_wrapper">
+    <button type="button" class="btn add-marker" (click)="mapService.uploadFile(input_file)">
+      <img src="/assets/upload_file.png" alt="" srcset="">
     </button>
+    <span>Загрузить файл</span>
+  </div>
+</div>
+<div class="tool_wrapper">
+  <button
+
+  type="button"
+  (click)="createRoute()"
+  class="btn  add-marker">
+  <img src="/assets/routing_map.png" alt="" srcset="">
+</button>
+<span>Построить маршрут</span>
+</div>
 </div>
 </div>
 <div
@@ -36,8 +57,9 @@
 class="spinner">
   <app-spinner></app-spinner>
 </div>
-
-<div class="form-container "
+<div [ngSwitch]="componentName">
+  <ng-template ngSwitchCase="addCoordinate">
+  <div class="form-container "
 [hidden]="!mapService.coordinateShow"
 
 >
@@ -72,7 +94,9 @@ class="spinner">
 
     >
   </div>
-<div *ngIf="!isNew">
+<div 
+class="d-flex justify-content-center flex-column"
+*ngIf="!mapService.isNew">
 <div  #imgdesc
 
 class="image-box" >
@@ -84,6 +108,7 @@ class="image-box" >
 <div class="point-description"
 *ngIf="mapService.currentCoordinates.description">
 <div
+class="d-flex justify-content-center add-img"
 *ngFor="let point of mapService.currentCoordinates.description">
   {{point.description}}
 </div>
@@ -101,7 +126,7 @@ class="add-image btn btn-success">Добавить картинку</button>
 class="d-flex justify-content-center">
   <button
   [disabled]="mapService.buttonDisable"
-  *ngIf="mapService.isNew; else notNew" class="btn btn-primary"
+  *ngIf="mapService.isNew" class="btn btn-primary"
   (click)="mapService.saveLayer()"
   >Сохранить</button>
   <!-- <ng-template #notNew>
@@ -113,4 +138,10 @@ class="d-flex justify-content-center">
 </form>
 
 </div>
+</ng-template>
+<ng-template ngSwitchCase="createRoute">
+    <app-create-route></app-create-route>
+</ng-template>
+</div>
+
 </div>
