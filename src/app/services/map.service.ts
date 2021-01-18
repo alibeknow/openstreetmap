@@ -10,9 +10,12 @@ import {SERVER_URL} from '../app.constants'
 import { CurrentCoordinate } from '../shared/models/current-point'
 import {environment} from '../../environments/environment'
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+declare let jsPDF;
+import html2canvas from 'html2canvas';
 
-
-import { drawPoint, createMarker, createMarkerCluster, createFeature, wait, leafletCreateRoute, addRouteToMap } from '../shared/utils/map_util.js'
+import { drawPoint, createMarker, createMarkerCluster, createFeature,
+   wait, leafletCreateRoute, addRouteToMap, setPositionMarker,
+   createDraggbleMarker } from '../shared/utils/map_util.js'
 import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 
@@ -32,7 +35,10 @@ export class MapService {
    description: [] ,
    name: ''
  }
+ jsPDF: any
  routeCoordinates : any = []
+ currentRouteDistance : number = 0
+ currentRoute: any = null
  showImage: boolean = false
  imgDesk : any = null
  cdr : any = null
@@ -283,7 +289,6 @@ const geoPoint = {
       link: e.target.properties.link
     }).toPromise()
 
-console.log(e.target.properties.description)
 
 this.markerImages = []
 this.coordinateShow = true
@@ -294,12 +299,8 @@ this.coordinateShow = true
     this.currentCoordinates.lat = e.latlng.lat
     this.currentCoordinates.lng = e.latlng.lng
     this.currentCoordinates.description = e.target.properties.description instanceof Array ? e.target.properties.description : [{description: e.target.properties.description}]
-    console.log(this.currentCoordinates)
       this.showImage = true
     this.cdr.detectChanges()
-
-console.log(e.target.rid)
-
 
     this.currentMarker = e.target
     this.isNew = false
@@ -364,7 +365,6 @@ uploadFile(input_file) {
 
 handleFileChange(e) {
   this.loadingKml = true
-console.log(this.selectedCity)
   const data = new FormData()
   data.append('file', e.target.files[0])
   data.append('cityId', this.selectedCity.id)
@@ -381,7 +381,7 @@ console.log(this.selectedCity)
 }
 
 addImage(image) {
-console.log(image)
+
 image.click()
 image.value = ''
 }
@@ -428,37 +428,112 @@ this.coordinateShow = true
 
 createRoute() {
   const arr = []
-  const marker = createMarker(50, 50, true)
-  this.map.addLayer(marker)
-  // this.map.removeLayer(marker)
-  this.map.on('mousemove', (e)=> {
-   marker.setLatLng(e.latlng)
+  // const marker = createMarker(50, 50, true, true)
+  // this.map.addLayer(marker)
+  // // this.map.removeLayer(marker)
+  // this.map.on('mousemove', (e)=> {
+  //  marker.setLatLng(e.latlng)
    
-   // console.log(e)
-  })
+  //  // console.log(e)
+  // })
 
   this.map.on('click', async (e)=> {
     this.routeCoordinates.push(e.latlng)
-
-    const savedMarkerStart = createMarker(e.latlng.lat, e.latlng.lng, true)
-    const savedMarkerEnd = createMarker(e.latlng.lat, e.latlng.lng, true)
-    this.map.addLayer(savedMarkerStart)
-    this.map.addLayer(savedMarkerEnd)
-    this.map.off('mousemove')
-    console.log(savedMarkerStart)
    
-    if(this.routeCoordinates.length == 2) {
-      console.log(this.routeCoordinates[0])
-      const url = environment.graphopperUrl + '/route?' + 'point=' + this.routeCoordinates[0].lat + ',' + this.routeCoordinates[0].lng + '&point=' + this.routeCoordinates[1].lat + ',' + this.routeCoordinates[1].lng + '&type=json&locale=ru-RU&key=&elevation=false&profile=car&points_encoded=false'
-      //console.log('here', savedMarkerStart, savedMarkerEnd)
-     // leafletCreateRoute(arr[0], arr[1]).addTo(this.map)
-      const  result = await this.http.get<{paths: any, downloaded: boolean}>(url).toPromise()
-      console.log(result)
+if(this.routeCoordinates.length > 2) return;
+console.log('create marker')
+  const savedMarkerStart = createDraggbleMarker(e.latlng.lat, e.latlng.lng, true, true)
+  arr.push(savedMarkerStart)
+  console.log(arr)
+  if(arr[0]) {
+    arr[0].on('dragend', (event)=> {
+      console.log('drag start first')
+      const position = arr[0].getLatLng();
+      console.log(position)
+      this.routeCoordinates[0] = position
+      savedMarkerStart.setLatLng(position, {
+        draggable: 'true'
+      })
+      this.createRequestToGraphhopper()
+    })
+  }
+ 
+if(arr[1]) {
+  arr[1].on('dragend', (event)=> {
+    console.log('drag end second')
+    const position = arr[1].getLatLng();
+    console.log(this.routeCoordinates[1])
+    console.log(position)
+    this.routeCoordinates[1] = position
+    this.cdr.detectChanges()
+    savedMarkerStart.setLatLng(position, {
+      draggable: 'true'
+    })
+    this.createRequestToGraphhopper()
+  })
+}
+  
 
-      addRouteToMap(result.paths[0].points.coordinates).addTo(this.map)
-    }
+
+  savedMarkerStart.addTo(this.map)
+    
+    
+    console.log('saved', savedMarkerStart)
+    // savedMarkerStart.on('click', (e)=> {
+    //   console.log('onclick marker')
+    // })
+    // savedMarkerStart.on('drag', (e)=> {
+
+    //   console.log('drag marker')
+    //   const marker = e.target;
+    //   const position = marker.getLatLng();
+    //   setPositionMarker(marker, position)
+    //   this.createRequestToGraphhopper()
+    //   this.map.removeLayer(savedMarkerStart)
+    // })
+    
+    // const savedMarkerEnd = createDraggbleMarker(e.latlng.lat, e.latlng.lng, true, true)
+    // this.map.addLayer(savedMarkerStart)
+    // this.map.addLayer(savedMarkerEnd)
+   
+    
+    this.createRequestToGraphhopper()
+   
+   
    
   })
+}
+
+async createRequestToGraphhopper() {
+  if(this.routeCoordinates.length == 2) {
+    
+    const url = environment.graphopperUrl + '/route?' + 'point=' + this.routeCoordinates[0].lat + ',' + this.routeCoordinates[0].lng + '&point=' + this.routeCoordinates[1].lat + ',' + this.routeCoordinates[1].lng + '&type=json&locale=ru-RU&key=&elevation=false&profile=car&points_encoded=false'
+    //console.log('here', savedMarkerStart, savedMarkerEnd)
+   // leafletCreateRoute(arr[0], arr[1]).addTo(this.map)
+    const  result = await this.http.get<{paths: any, downloaded: boolean}>(url).toPromise()
+   console.log(result.paths[0].points)
+    if(this.currentRoute) this.map.removeLayer(this.currentRoute)
+    this.currentRouteDistance = result.paths[0].distance
+    this.cdr.detectChanges()
+   this.currentRoute = addRouteToMap(result.paths[0].points.coordinates).addTo(this.map)
+  }
+}
+
+exportPdf(e) {
+  
+
+
+  html2canvas(document.getElementById('table')).then(canvas => {
+    const contentDataURL = canvas.toDataURL('image/png')  
+    let pdf = new jsPDF('p', 'cm', 'a4'); //Generates PDF in landscape mode
+    // let pdf = new jspdf('p', 'cm', 'a4'); Generates PDF in portrait mode
+    pdf.addImage(contentDataURL, 'PNG', 0, 0, 10, 4);  
+    pdf.save('Маршрут.pdf');   
+  });   
+
+
+ 
+
 }
 
 }

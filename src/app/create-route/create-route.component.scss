@@ -1,8 +1,9 @@
 .route_marker-box {
     display: flex;
     align-items: center;
-    margin: 10px 20px;
+    margin: 20px auto;
     justify-content: center;
+    width: 80%;
 
 }
 
@@ -31,3 +32,18 @@
     top: 30%;
 }
 
+.route-name {
+    width: 80%;
+    margin: 20px auto;
+}
+
+.route-btn_wrapper {
+    width: 80%;
+    margin: 0 auto;
+    justify-content: space-between;
+}
+
+.exp-pdf_block {
+    margin: 20px auto;
+    width: 80%;
+}

@@ -34,12 +34,26 @@ const markerId =  new L.Draw.Marker(map, {
 
 }
 
-export function createMarker(lat, lng, marker) {
+export function createMarker(lat, lng, marker, dragble) {
  const createdMarker = new L.marker([lat, lng], {
-   icon: marker ? routeIcon: greenIcon
+   icon: marker ? routeIcon: greenIcon,
+   draggable: dragble
  });
 
   return createdMarker
+}
+
+export function createDraggbleMarker(lat, lng) {
+  const createdMarker = new L.marker([lat, lng], {
+    icon: routeIcon,
+    draggable: true
+  });
+  
+  return createdMarker
+}
+
+export function setPositionMarker(marker, position) {
+  marker.setLatLng(new L.LatLng(position.lat, position.lng),{draggable:'true'});
 }
 
 

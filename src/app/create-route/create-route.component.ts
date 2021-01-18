@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {MapService} from '../services/map.service'
 
 @Component({
@@ -7,7 +7,7 @@ import {MapService} from '../services/map.service'
   styleUrls: ['./create-route.component.scss']
 })
 export class CreateRouteComponent implements OnInit {
-
+  @ViewChild('table_pdf', {static: true}) tablePdf : ElementRef
   constructor(public mapService: MapService) { }
 
   ngOnInit() {

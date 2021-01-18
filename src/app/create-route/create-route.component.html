@@ -29,7 +29,7 @@
        >
 
   </div>
-  <div class="form-group">
+  <div class="form-group route-name">
     <label for="exampleInputPassword1">Название</label>
     <input type="text" class="form-control"  placeholder=""
     [value]=""
@@ -40,21 +40,55 @@
 <div 
 class="d-flex justify-content-center flex-column"
 >
+<div class="exp-pdf_block">
+  <button 
+  (click)="mapService.exportPdf(tablePdf)"
+  class="btn btn-primary">Экспорт</button>
+</div>
+<table #table_pdf id="table"
+ class="table table-fixed-width table-condensed">
+  <tr >
+    <td > Начальная точка</td>
+    <td >{{mapService.routeCoordinates[0] ? [mapService.routeCoordinates[0].lat.toFixed(6), mapService.routeCoordinates[0].lng.toFixed(6)].join() : ''}}</td>
+  
+    
+  </tr>
+  <tr >
+    <td >Конечная точка</td>
+    <td >{{mapService.routeCoordinates[1] ? [mapService.routeCoordinates[1].lat.toFixed(6), mapService.routeCoordinates[1].lng.toFixed(6)].join() : ''}}</td>
+    
+    
+  </tr>
+  <tr >
+    <td >Расстояние</td>
+    <td >{{mapService.currentRouteDistance / 1000}} км</td>
+    
+    
+  </tr>
+</table>
 </div>
 <div
 
-class="d-flex justify-content-center">
+class="d-flex  route-btn_wrapper">
+
+<button
+  
+  class="btn" style="background-color: #ff5252; color: #fff;"
+  (click)="mapService.saveLayer()"
+  >Очистить</button>
   <button
   
-  class="btn btn-primary"
+  class="btn" style="background-color: #9ccc65; color: #fff;"
   (click)="mapService.saveLayer()"
   >Сохранить</button>
+  
   <!-- <ng-template #notNew>
     <button  class="btn btn-primary"
     (click)="deleteLayer()"
     >Удалить</button>
   </ng-template> -->
 </div>
+
 </form>
 
 </div>
