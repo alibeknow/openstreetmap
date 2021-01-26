@@ -304,7 +304,7 @@ this.coordinateShow = true
 
     this.currentMarker = e.target
     this.isNew = false
-    //console.log(this.formContainer.nativeElement.children[3].children[0].attributes[2].textContent)
+
 
 
     this.cdr.detectChanges()
@@ -355,7 +355,7 @@ async  getCities() {
 uploadFile(input_file) {
   if(!this.selectedCity) {
     this.citySelectInvalid = true
-    console.log('select city')
+ 
     return
   }
   input_file.click()
@@ -387,7 +387,7 @@ image.value = ''
 }
 
 addImageHandle(e) {
-  console.log('handle', this.currentCoordinates)
+ 
   const data = new FormData()
   data.append('file', e.target.files[0])
   data.append('pointId', this.currentCoordinates.pointId)
@@ -399,57 +399,34 @@ addImageHandle(e) {
 
     }).toPromise()
 
-console.log(result)
+
 
 this.markerImages = []
 this.coordinateShow = true
     this.markerImages = result.files.map(item=> `${environment.apiUrl}/uploads/${item}`)
 
-
-    // this.currentCoordinates.name = e.target.properties.name
-    // this.currentCoordinates.lat = e.latlng.lat
-    // this.currentCoordinates.lng = e.latlng.lng
-
       this.showImage = true
     this.cdr.detectChanges()
 
-// console.log(e.target.rid)
-//     this.currentCoordinates = {
-//       pointId: e.target.rid,
-//       lat: e.latlng.lat,
-//       lng: e.latlng.lng,
-//       description: [e.target.properties.description],
-//       name: e.target.properties.name
 
-//     }
 
   })
 }
 
 createRoute() {
   const arr = []
-  // const marker = createMarker(50, 50, true, true)
-  // this.map.addLayer(marker)
-  // // this.map.removeLayer(marker)
-  // this.map.on('mousemove', (e)=> {
-  //  marker.setLatLng(e.latlng)
-   
-  //  // console.log(e)
-  // })
 
   this.map.on('click', async (e)=> {
     this.routeCoordinates.push(e.latlng)
    
 if(this.routeCoordinates.length > 2) return;
-console.log('create marker')
   const savedMarkerStart = createDraggbleMarker(e.latlng.lat, e.latlng.lng, true, true)
   arr.push(savedMarkerStart)
-  console.log(arr)
   if(arr[0]) {
     arr[0].on('dragend', (event)=> {
-      console.log('drag start first')
+
       const position = arr[0].getLatLng();
-      console.log(position)
+
       this.routeCoordinates[0] = position
       savedMarkerStart.setLatLng(position, {
         draggable: 'true'
@@ -460,10 +437,8 @@ console.log('create marker')
  
 if(arr[1]) {
   arr[1].on('dragend', (event)=> {
-    console.log('drag end second')
+
     const position = arr[1].getLatLng();
-    console.log(this.routeCoordinates[1])
-    console.log(position)
     this.routeCoordinates[1] = position
     this.cdr.detectChanges()
     savedMarkerStart.setLatLng(position, {
@@ -476,25 +451,6 @@ if(arr[1]) {
 
 
   savedMarkerStart.addTo(this.map)
-    
-    
-    console.log('saved', savedMarkerStart)
-    // savedMarkerStart.on('click', (e)=> {
-    //   console.log('onclick marker')
-    // })
-    // savedMarkerStart.on('drag', (e)=> {
-
-    //   console.log('drag marker')
-    //   const marker = e.target;
-    //   const position = marker.getLatLng();
-    //   setPositionMarker(marker, position)
-    //   this.createRequestToGraphhopper()
-    //   this.map.removeLayer(savedMarkerStart)
-    // })
-    
-    // const savedMarkerEnd = createDraggbleMarker(e.latlng.lat, e.latlng.lng, true, true)
-    // this.map.addLayer(savedMarkerStart)
-    // this.map.addLayer(savedMarkerEnd)
    
     
     this.createRequestToGraphhopper()
@@ -508,10 +464,14 @@ async createRequestToGraphhopper() {
   if(this.routeCoordinates.length == 2) {
     
     const url = environment.graphopperUrl + '/route?' + 'point=' + this.routeCoordinates[0].lat + ',' + this.routeCoordinates[0].lng + '&point=' + this.routeCoordinates[1].lat + ',' + this.routeCoordinates[1].lng + '&type=json&locale=ru-RU&key=&elevation=false&profile=car&points_encoded=false'
-    //console.log('here', savedMarkerStart, savedMarkerEnd)
-   // leafletCreateRoute(arr[0], arr[1]).addTo(this.map)
-    const  result = await this.http.get<{paths: any, downloaded: boolean}>(url).toPromise()
-   console.log(result.paths[0].points)
+  
+   const {result} = await this.http.post<{result: any}>(`${environment.apiUrl}/api/v1.0/geopoints/roadRoute`, {
+     lat1: this.routeCoordinates[0].lat,
+     lng1: this.routeCoordinates[0].lng,
+     lat2: this.routeCoordinates[1].lat,
+     lng2: this.routeCoordinates[1].lng
+   }).toPromise() 
+  
     if(this.currentRoute) this.map.removeLayer(this.currentRoute)
     this.currentRouteDistance = result.paths[0].distance
     this.cdr.detectChanges()
