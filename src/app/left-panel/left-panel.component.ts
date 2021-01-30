@@ -42,7 +42,7 @@ setDescription(e) {
 
  async drawPoint() {
    if(!this.mapService.selectedCity) {
-    this.componentName = "addCoordinate"
+    this.mapService.componentName = "addCoordinate"
      this.mapService.citySelectInvalid = true
      console.log('select city')
      return
@@ -73,7 +73,7 @@ this.mapService.isNew = true
 
 
   createRoute() {
-    this.componentName = "createRoute"
+    this.mapService.componentName = "createRoute"
     console.log('create route btn')
     this.mapService.createRoute()
   }

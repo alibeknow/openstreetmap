@@ -35,6 +35,7 @@ export class MapService {
    description: [] ,
    name: ''
  }
+ componentName: String = ''
  jsPDF: any
  routeCoordinates : any = []
  currentRouteDistance : number = 0
@@ -284,6 +285,7 @@ const geoPoint = {
   markerClick = async (e)=> {
 
     let result
+   this.componentName = "addCoordinate"
     result = await this.http.post<{files: any, downloaded: boolean}>(`${environment.apiUrl}/api/v1.0/geopoints/image`, {
       id: e.target.rid,
       link: e.target.properties.link
