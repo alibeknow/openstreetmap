@@ -227,10 +227,17 @@ const geoPoint = {
                 this.markerCluster = createMarkerCluster({ chunkedLoading: true})
 
     this.layersList.forEach(item => {
+     
 
+let color
+if(item.description) {
+  color = 'blue'
+}
+ if(item.uploads.length > 0) {
+color = 'red'
+}
 
-
-        const marker = createMarker(item.coordinates.coordinates[1] , item.coordinates.coordinates[0])
+        const marker = createMarker(item.coordinates.coordinates[1] , item.coordinates.coordinates[0], color)
         marker.bindPopup(`${item.name}`)
         marker.on('mouseover', function(){
           this.openPopup()
