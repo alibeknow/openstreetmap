@@ -234,7 +234,7 @@ let color
 if(item.description) {
   color = 'blue'
 }
- if(item.uploads.length > 0) {
+ if(item.uploads.length > 0 || !!item.google_link) {
 color = 'red'
 }
 
