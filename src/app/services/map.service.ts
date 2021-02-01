@@ -12,6 +12,7 @@ import {environment} from '../../environments/environment'
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 declare let jsPDF;
 import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
 
 import { drawPoint, createMarker, createMarkerCluster, createFeature,
    wait, leafletCreateRoute, addRouteToMap, setPositionMarker,
@@ -488,17 +489,36 @@ async createRequestToGraphhopper() {
   }
 }
 
-exportPdf(e) {
+async exportPdf(e) {
   
+ 
+ this.http.post<{message: String}>(`${environment.apiUrl}/api/v1.0/document`, {
+  pointStart: {
+		lat: this.routeCoordinates[0] ? this.routeCoordinates[0].lat.toFixed(6) : '', 
+		lng: this.routeCoordinates[0] ? this.routeCoordinates[0].lng.toFixed(6) : '',
+	},
+	pointEnd: {
+		lat: this.routeCoordinates[1] ? this.routeCoordinates[1].lat.toFixed(6) : '', 
+		lng: this.routeCoordinates[1] ? this.routeCoordinates[1].lng.toFixed(6) : ''
+	},
+	
+	distance: this.currentRouteDistance ? this.currentRouteDistance /1000 : ''
+  },
+  ).toPromise().then(()=> {
+    console.log('then***********')
+    this.http.get(`${environment.apiUrl}/api/v1.0/document`, 
+    {
+      responseType: 'arraybuffer'}).subscribe(response => {
+        let blob = new Blob([response], { type: "application/pdf"});
+  saveAs(blob, "Маршрут.pdf");
+       
+  })
+})
 
 
-  html2canvas(document.getElementById('table')).then(canvas => {
-    const contentDataURL = canvas.toDataURL('image/png')  
-    let pdf = new jsPDF('p', 'cm', 'a4'); //Generates PDF in landscape mode
-    // let pdf = new jspdf('p', 'cm', 'a4'); Generates PDF in portrait mode
-    pdf.addImage(contentDataURL, 'PNG', 0, 0, 10, 4);  
-    pdf.save('Маршрут.pdf');   
-  });   
+  
+  
+  
 
 
  
