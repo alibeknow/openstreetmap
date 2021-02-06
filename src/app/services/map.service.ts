@@ -234,7 +234,7 @@ let color
 if(item.description) {
   color = 'blue'
 }
- if(item.uploads.length > 0 || !!item.google_link) {
+ if(item.uploads && item.uploads.length > 0) {
 color = 'red'
 }
 
@@ -250,7 +250,8 @@ color = 'red'
         marker.properties = {
           name: item.name,
           description: item.description? item.description : '',
-          link: item.google_link
+          link: item.google_link,
+          uploads: item.uploads.length > 0 ? true : false
         }
         // marker.properties.name = item.name
         // marker.properties.description = item.description
@@ -291,19 +292,28 @@ color = 'red'
   }
 
   markerClick = async (e)=> {
+    console.log('marker click', e.target)
+
 
     let result
    this.componentName = "addCoordinate"
+   this.markerImages = []
+   if(e.target.properties.uploads) {
     result = await this.http.post<{files: any, downloaded: boolean}>(`${environment.apiUrl}/api/v1.0/geopoints/image`, {
       id: e.target.rid,
       link: e.target.properties.link
     }).toPromise()
 
+    console.log(result)
 
-this.markerImages = []
-this.coordinateShow = true
+
+
     this.markerImages = result.files.map(item=> `${environment.apiUrl}/uploads/${item}`)
 
+   }
+   
+   console.log('after create files')
+   this.coordinateShow = true
     this.currentCoordinates.pointId = e.target.rid
     this.currentCoordinates.name = e.target.properties.name
     this.currentCoordinates.lat = e.latlng.lat
@@ -379,14 +389,27 @@ handleFileChange(e) {
   data.append('file', e.target.files[0])
   data.append('cityId', this.selectedCity.id)
   data.append('userId', this.userId)
+  const timeoutId = setInterval(()=> {
+    this.getAllMarkers(null)
+  }, 30000)
 
   return this.http.post<{}>(`${environment.apiUrl}/api/v1.0/geopoints/upload`,
   data
   ).subscribe(result=> {
+    clearInterval(timeoutId)
     this.loadingKml = false
     this.getAllMarkers(null)
 
+
+  }, (error)=> {
+    clearInterval(timeoutId)
+    this.loadingKml = false
   })
+
+
+  setTimeout(()=> {
+    this.getAllMarkers(null)
+  }, 10000)
 
 }
 
